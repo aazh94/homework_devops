@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'golang:1.22.3'
+        }
+    }
 
     environment {
         DOCKER_CREDENTIALS_ID = 'docker-credentials'
@@ -8,15 +12,6 @@ pipeline {
     }
 
     stages {
-        stage('Install Go') {
-            steps {
-                sh '''
-                curl -LO https://golang.org/dl/go1.22.3.linux-amd64.tar.gz
-                sudo tar -C /usr/local -xzf go1.22.3.linux-amd64.tar.gz
-                export PATH=$PATH:/usr/local/go/bin
-                '''
-            }
-        }
         stage('Checkout SCM') {
             steps {
                 git url: 'https://github.com/aazh94/homework_devops.git', branch: 'main'
@@ -24,10 +19,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh '''
-                export PATH=$PATH:/usr/local/go/bin
-                GOOS=linux go build -a -installsuffix nocgo -o app .
-                '''
+                sh 'GOOS=linux go build -a -installsuffix nocgo -o app .'
             }
         }
         stage('Upload to Nexus') {
@@ -36,7 +28,6 @@ pipeline {
                     def nexusUrl = "${NEXUS_URL}/app"
                     withCredentials([usernamePassword(credentialsId: "${NEXUS_CREDENTIALS_ID}", passwordVariable: 'PASS', usernameVariable: 'USER')]) {
                         sh '''
-                        export PATH=$PATH:/usr/local/go/bin
                         curl -v -u ${USER}:${PASS} --upload-file ./app ${nexusUrl}
                         '''
                     }
