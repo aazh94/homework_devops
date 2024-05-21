@@ -4,31 +4,28 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/aazh94/homework_devops.git'
+                git url: 'https://github.com/aazh94/homework_devops.git', branch: 'main'
             }
         }
-
         stage('Build') {
             steps {
                 script {
-                    sh 'go test .'
+                    sh '/usr/local/go/bin/go test .'
                 }
             }
         }
-
         stage('Docker Build') {
             steps {
                 script {
-                    docker.build("ubuntu-bionic:8082/hello-world:v7")
+                    docker.build('ubuntu-bionic:8082/hello-world:v7')
                 }
             }
         }
-
         stage('Docker Push') {
             steps {
                 script {
-                    docker.withRegistry('http://ubuntu-bionic:8082', 'nexus') {
-                        docker.image("ubuntu-bionic:8082/hello-world:v7").push()
+                    docker.withRegistry('http://ubuntu-bionic:8082', 'docker-credentials') {
+                        docker.image('ubuntu-bionic:8082/hello-world:v7').push()
                     }
                 }
             }
