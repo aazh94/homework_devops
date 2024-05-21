@@ -1,28 +1,21 @@
 
-Домашнее задание к занятию «Что такое DevOps. СI/СD» Zhdanov Artem
 
-
-
-
-
+# Домашнее задание к занятию «Что такое DevOps. СI/СD» Zhdanov Artem
 
 ### Задание 1
 
-jenkins_bild.png
-jenkins_config.png
-
+![Task 1.1](jenkins_bild.png)
+![Task 1.2](jenkins_config.png)
 
 ### Задание 2
 
-pipeline.png
-pipeline_config.png
-
+![Task 2.1](pipeline.png)
+![Task 2.2](pipeline_config.png)
 
 ### Задание 3
 
-
-task3_1.png
-task3_2.png
+![Task 3.1](task3_1.png)
+![Task 3.2](task3_2.png)
 
 
 
