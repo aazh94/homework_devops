@@ -17,10 +17,8 @@ pipeline {
         stage('Build') {
             steps {
                 sh '''
-                    curl -LO https://golang.org/dl/go1.22.3.linux-amd64.tar.gz
-                    tar -C /usr/local -xzf go1.22.3.linux-amd64.tar.gz
                     export PATH=$PATH:/usr/local/go/bin
-                    GOOS=linux /usr/local/go/bin/go build -a -installsuffix nocgo -o app .
+                    GOOS=linux go build -a -installsuffix nocgo -o app .
                 '''
             }
         }
