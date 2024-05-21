@@ -9,6 +9,7 @@ pipeline {
         DOCKER_CREDENTIALS_ID = 'docker-credentials'
         NEXUS_CREDENTIALS_ID = 'nexus-credentials'
         NEXUS_URL = 'http://localhost:8081/repository/test'
+        GOCACHE = '/tmp/.cache'
     }
 
     stages {
@@ -36,3 +37,4 @@ pipeline {
         }
     }
 }
+
