@@ -2,15 +2,15 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS_ID = 'docker-credentials' 
-        NEXUS_CREDENTIALS_ID = 'nexus-credentials' 
-        NEXUS_URL = 'http://localhost:8081/repository/test/'  
+        DOCKER_CREDENTIALS_ID = 'docker-credentials'
+        NEXUS_CREDENTIALS_ID = 'nexus-credentials'
+        NEXUS_URL = 'http://localhost:8081/repository/test'
     }
 
     stages {
         stage('Checkout SCM') {
             steps {
-                checkout scm
+                git url: 'https://github.com/aazh94/homework_devops.git', branch: 'main'
             }
         }
         stage('Build') {
@@ -21,10 +21,11 @@ pipeline {
         stage('Upload to Nexus') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: NEXUS_CREDENTIALS_ID, passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
-                        sh '''
-                            curl -u ${NEXUS_USERNAME}:${NEXUS_PASSWORD} --upload-file ./app ${NEXUS_URL}app
-                        '''
+                    def nexusUrl = "${NEXUS_URL}/app"
+                    withCredentials([usernamePassword(credentialsId: "${NEXUS_CREDENTIALS_ID}", passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                        sh """
+                        curl -v -u ${USER}:${PASS} --upload-file ./app ${nexusUrl}
+                        """
                     }
                 }
             }
