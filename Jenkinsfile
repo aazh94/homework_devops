@@ -2,7 +2,9 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS_ID = 'docker-credentials' // Укажите ID ваших учетных данных Docker
+        DOCKER_CREDENTIALS_ID = 'docker-credentials' 
+        NEXUS_CREDENTIALS_ID = 'nexus-credentials' 
+        NEXUS_URL = 'http://localhost:8081/repository/test/'  
     }
 
     stages {
@@ -11,17 +13,19 @@ pipeline {
                 checkout scm
             }
         }
-
         stage('Build') {
             steps {
-                sh '/usr/local/go/bin/go test .'
+                sh 'GOOS=linux go build -a -installsuffix nocgo -o app .'
             }
         }
-
-        stage('Docker Build') {
+        stage('Upload to Nexus') {
             steps {
                 script {
-                    docker.build("ubuntu-bionic:8082/hello-world:v7")
+                    withCredentials([usernamePassword(credentialsId: NEXUS_CREDENTIALS_ID, passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USERNAME')]) {
+                        sh '''
+                            curl -u ${NEXUS_USERNAME}:${NEXUS_PASSWORD} --upload-file ./app ${NEXUS_URL}app
+                        '''
+                    }
                 }
             }
         }
